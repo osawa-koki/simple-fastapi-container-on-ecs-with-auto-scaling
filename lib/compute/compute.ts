@@ -66,6 +66,28 @@ export default class ComputeStack extends cdk.Stack {
       desiredCount: 1,
       assignPublicIp: false,
       listenerPort: 80,
+      capacityProviderStrategies: [
+        {
+          capacityProvider: 'FARGATE',
+          weight: 1,
+        },
+        {
+          capacityProvider: 'FARGATE_SPOT',
+          weight: 1,
+        },
+      ],
+    });
+
+    // Auto Scalingの設定
+    const scaling = fargateService.service.autoScaleTaskCount({
+      maxCapacity: 3,
+      minCapacity: 2,
+    });
+
+    scaling.scaleOnCpuUtilization('CpuScaling', {
+      targetUtilizationPercent: 70,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60),
     });
 
     fargateService.service.connections.allowFromAnyIpv4(ec2.Port.tcp(80), 'Allow HTTP access from the internet');
