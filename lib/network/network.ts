@@ -2,15 +2,19 @@ import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import { Construct } from 'constructs';
 
-import { BASE_STACK_NAME } from '../const';
+interface NetworkStackProps extends cdk.StackProps {
+  stackName: string;
+}
 
 export default class NetworkStack extends cdk.Stack {
   public readonly vpc: ec2.Vpc;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: NetworkStackProps) {
+    const { stackName } = props;
+
     super(scope, id, {
       ...props,
-      stackName: `${BASE_STACK_NAME}-NetworkStack`,
+      stackName,
     });
 
     // VPCの作成
