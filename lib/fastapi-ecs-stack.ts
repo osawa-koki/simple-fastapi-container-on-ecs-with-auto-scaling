@@ -17,13 +17,17 @@ export class FastapiEcsStack extends cdk.Stack {
       stackName: BASE_STACK_NAME,
     });
 
-    const networkStack = new NetworkStack(this, 'NetworkStack');
+    const networkStack = new NetworkStack(this, 'NetworkStack', {
+      stackName: `${BASE_STACK_NAME}-NetworkStack`,
+    });
 
     const computeStack = new ComputeStack(this, 'ComputeStack', {
+      stackName: `${BASE_STACK_NAME}-ComputeStack`,
       vpc: networkStack.vpc,
     });
 
     new OutputStack(this, 'OutputStack', {
+      stackName: `${BASE_STACK_NAME}-OutputStack`,
       fargateService: computeStack.fargateService,
     });
   }

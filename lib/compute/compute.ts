@@ -5,9 +5,8 @@ import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
-import { BASE_STACK_NAME } from '../const';
-
 interface ComputeStackProps extends cdk.StackProps {
+  stackName: string;
   vpc: ec2.Vpc;
 }
 
@@ -15,12 +14,12 @@ export default class ComputeStack extends cdk.Stack {
   public readonly fargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
 
   constructor(scope: Construct, id: string, props: ComputeStackProps) {
+    const { stackName, vpc } = props;
+
     super(scope, id, {
       ...props,
-      stackName: `${BASE_STACK_NAME}-ComputeStack`,
+      stackName,
     });
-
-    const { vpc } = props;
 
     // ECSクラスターの作成
     const cluster = new ecs.Cluster(this, 'FargateCluster', {

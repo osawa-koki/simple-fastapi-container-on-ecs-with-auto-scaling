@@ -2,20 +2,19 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 
-import { BASE_STACK_NAME } from '../const';
-
 interface OutputStackProps extends cdk.StackProps {
+  stackName: string;
   fargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
 }
 
 export default class OutputStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: OutputStackProps) {
+    const { stackName, fargateService } = props;
+
     super(scope, id, {
       ...props,
-      stackName: `${BASE_STACK_NAME}-OutputStack`,
+      stackName,
     });
-
-    const { fargateService } = props;
 
     new cdk.CfnOutput(this, 'LoadBalancerDNS', {
       value: fargateService.loadBalancer.loadBalancerDnsName,
@@ -23,4 +22,3 @@ export default class OutputStack extends cdk.Stack {
     });
   }
 }
-
